@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>健曄醫康 - 藥袋版面設定工具</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+
+<body>
+  <header>
+    <h1>健曄醫康 - 藥袋版面設定工具</h1>
+    <div class="actions">
+      <label style="font-size:14px; margin-right:8px;">樣板名稱：<input id="template-name" type="text" style="width:120px;"
+          placeholder="請輸入名稱"></label>
+      <button id="btn-add-field">新增欄位</button>
+      <span class="action-sep" aria-hidden="true"></span>
+      <button id="btn-save-temp" style="background:#0a84ff; color:#fff;">暫存</button>
+      <button id="btn-load-temp" style="background:#475569; color:#fff;">還原暫存</button>
+      <span class="action-sep" aria-hidden="true"></span>
+      <button id="btn-clear-all" style="background:#e54848; color:#fff;">一鍵清除</button>
+      <span class="action-sep" aria-hidden="true"></span>
+      <label style="font-size:14px; margin-right:8px;">選擇模板： <select id="sample-select"
+          style="min-width:160px"></select></label>
+      <!-- <span class="action-sep" aria-hidden="true"></span> -->
+      <!-- <button id="btn-print-preview">列印預覽</button> -->
+      <span class="action-sep" aria-hidden="true"></span>
+      <button id="btn-load-json">匯入 JSON</button>
+      <button id="btn-export-json">匯出 JSON</button>
+      <input type="file" id="file-json" accept="application/json" style="display:none" />
+      <input type="file" id="file-bg" accept="image/*" style="display:none" />
+    </div>
+  </header>
+  <main>
+    <section class="left-panel">
+      <h2>欄位清單</h2>
+      <div id="field-list" class="field-list"></div>
+    </section>
+    <section class="right-panel">
+      <div class="canvas-title-row">
+        <h2>視覺化版面 (可拖曳/縮放)</h2>
+        <span id="field-pos-info" class="field-pos-info"></span>
+        <div style="display:inline-block; margin-left:16px; vertical-align:middle;">
+          <label for="zoom-bar" style="font-size:14px;">縮放：</label>
+          <input id="zoom-bar" type="range" min="0.5" max="2" step="0.01" value="1"
+            style="width:120px; vertical-align:middle;">
+          <span id="zoom-label"
+            style="min-width:40px; display:inline-block; text-align:right; font-size:14px;">100%</span>
+        </div>
+      </div>
+      <div id="canvas-wrapper">
+        <div id="bag-canvas" class="bag-canvas">
+          <div id="bg-layer" class="bg-layer" aria-label="底圖層"></div>
+        </div>
+      </div>
+      <div class="print-options">
+        <label>整體寬(mm) <input type="number" id="page-width" value="148" step="1"></label>
+        <label>整體高(mm) <input type="number" id="page-height" value="210" step="1"></label>
+        <label>列印 DPI <input type="number" id="dpi" value="300" step="10"></label>
+      </div>
+      <div class="bg-controls hide" id="bg-controls">
+        <div class="bg-controls-header">
+          <h3>底圖</h3>
+          <button id="btn-bg-toggle" type="button" title="顯示/隱藏設定">隱藏設定</button>
+        </div>
+        <div class="bg-grid" id="bg-grid">
+          <button id="btn-bg-upload" type="button">上傳底圖</button>
+          <button id="btn-bg-clear" type="button">清除</button>
+          <label>透明度 <input type="range" id="bg-opacity" min="0" max="1" step="0.05" value="0.35"></label>
+          <label>縮放(%) <input type="number" id="bg-scale" value="100" step="1" min="10" max="400"></label>
+          <label>X位移(mm) <input type="number" id="bg-x" value="0" step="0.5"></label>
+          <label>Y位移(mm) <input type="number" id="bg-y" value="0" step="0.5"></label>
+          <label>寬(mm) <input type="number" id="bg-width" value="148" step="1"></label>
+          <label>高(mm) <input type="number" id="bg-height" value="210" step="1"></label>
+        </div>
+      </div>
+    </section>
+  </main>
+  <template id="tpl-field-item">
+    <div class="field-item" draggable="true">
+      <div class="field-item-header">
+        <input class="fi-label" placeholder="標籤 (如: 姓名)" />
+        <input class="fi-key" placeholder="key (自訂)" style="width:90px;" />
+        <select class="fi-type">
+          <option value="text">文字</option>
+          <option value="date">日期</option>
+          <option value="multiline">多行</option>
+          <option value="qrcode">QRCode</option>
+          <option value="table">表格</option>
+        </select>
+        <button class="btn-del">✕</button>
+      </div>
+      <textarea class="fi-value" placeholder="內容 / 變數描述"></textarea>
+      <div class="fi-table-editor" style="display:none;">
+        <div class="table-controls" style="margin-bottom:6px;">
+          <button type="button" class="btn-add-row">新增列</button>
+          <button type="button" class="btn-add-col">新增欄</button>
+        </div>
+        <label style="font-size:13px; display:block; margin-bottom:4px;">
+          <input type="checkbox" class="fi-table-border" checked /> 顯示框線
+        </label>
+        <div class="table-colwidths" style="margin-bottom:4px; font-size:13px;"></div>
+        <table class="table-edit-grid" style="border-collapse:collapse; width:100%;"></table>
+      </div>
+      <details>
+        <summary>樣式</summary>
+        <div class="style-grid">
+          <label>X(mm)<input type="number" class="fi-x" step="0.5" value="10" /></label>
+          <label>Y(mm)<input type="number" class="fi-y" step="0.5" value="10" /></label>
+          <label>寬(mm)<input type="number" class="fi-w" step="0.5" value="40" /></label>
+          <label>高(mm)<input type="number" class="fi-h" step="0.5" value="10" /></label>
+          <label>字體(px)<input type="number" class="fi-font" step="1" value="14" /></label>
+          <label>粗體<input type="checkbox" class="fi-bold" /></label>
+          <label>對齊
+            <select class="fi-align">
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </label>
+        </div>
+      </details>
+    </div>
+  </template>
+  <script src="./src/app.js" type="module"></script>
+</body>
+
+</html>

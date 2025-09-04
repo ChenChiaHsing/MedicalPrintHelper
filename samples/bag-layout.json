@@ -1,0 +1,235 @@
+{
+  "name": "和美",
+  "page": {
+    "widthMm": 148,
+    "heightMm": 210,
+    "dpi": 300
+  },
+  "fields": [
+    {
+      "id": "F16",
+      "label": "診所名稱",
+      "type": "text",
+      "value": "",
+      "x": 14,
+      "y": 5,
+      "w": 120,
+      "h": 12,
+      "font": 26,
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "id": "F17",
+      "label": "服務範圍",
+      "type": "table",
+      "value": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "C",
+          "D"
+        ]
+      ],
+      "x": 14,
+      "y": 18,
+      "w": 120,
+      "h": 22,
+      "font": 9,
+      "showBorder": true,
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "id": "F18",
+      "label": "Slogan",
+      "type": "text",
+      "value": "",
+      "x": 14,
+      "y": 41,
+      "w": 120,
+      "h": 8,
+      "font": 14,
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "id": "F19",
+      "label": "姓名：",
+      "type": "text",
+      "value": "",
+      "x": 8,
+      "y": 52,
+      "w": 40,
+      "h": 8,
+      "font": 14,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F20",
+      "label": "生日：",
+      "type": "text",
+      "value": "",
+      "x": 50,
+      "y": 52,
+      "w": 40,
+      "h": 8,
+      "font": 14,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F21",
+      "label": "性別：",
+      "type": "text",
+      "value": "",
+      "x": 92,
+      "y": 52,
+      "w": 20,
+      "h": 8,
+      "font": 14,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F22",
+      "label": "日期：",
+      "type": "text",
+      "value": "",
+      "x": 114,
+      "y": 52,
+      "w": 30,
+      "h": 8,
+      "font": 14,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F23",
+      "label": "醫令名稱區",
+      "type": "table",
+      "value": [
+        [
+          "藥品",
+          "名稱",
+          "用量X天",
+          "用法",
+          "總量"
+        ]
+      ],
+      "x": 8,
+      "y": 62,
+      "w": 130,
+      "h": 6,
+      "font": 10,
+      "showBorder": false,
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "id": "F24",
+      "label": "醫令區",
+      "type": "multiline",
+      "value": "",
+      "x": 8,
+      "y": 69,
+      "w": 130,
+      "h": 70,
+      "font": 10,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F25",
+      "label": "☐ 內含易潮濕藥品，請冷藏 / Refrigeration necessary",
+      "type": "text",
+      "value": "",
+      "x": 8,
+      "y": 142,
+      "w": 130,
+      "h": 8,
+      "font": 10,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F26",
+      "label": "本院採用歐、美原廠及GMP優良製藥，安全效果好",
+      "type": "text",
+      "value": "",
+      "x": 8,
+      "y": 152,
+      "w": 130,
+      "h": 6,
+      "font": 9,
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "id": "F27",
+      "label": "說明",
+      "type": "multiline",
+      "value": "本院看診時間 ✔看診\n時段/星期  一  二  三  四  五  六  日\n上午08:00-12:00 ✔ ✔ ✔ ✔ ✔ ✔  \n下午03:00-06:00 ✔ ✔ ✔ ✔ ✔ ✔  \n晚上06:00-09:00 ✔ ✔ ✔ ✔ ✔ ✔  ",
+      "x": 8,
+      "y": 160,
+      "w": 70,
+      "h": 42,
+      "font": 9,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F28",
+      "label": "院址：中壢區元化路53號",
+      "type": "text",
+      "value": "",
+      "x": 82,
+      "y": 160,
+      "w": 56,
+      "h": 8,
+      "font": 11,
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "id": "F29",
+      "label": "(03)425-6562",
+      "type": "text",
+      "value": "",
+      "x": 82,
+      "y": 170,
+      "w": 56,
+      "h": 10,
+      "font": 18,
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "id": "F30",
+      "label": "http://wellbeauty.smartweb.tw",
+      "type": "text",
+      "value": "",
+      "x": 82,
+      "y": 182,
+      "w": 56,
+      "h": 8,
+      "font": 9,
+      "bold": false,
+      "align": "center"
+    }
+  ],
+  "background": {
+    "dataUrl": null,
+    "opacity": 0.35,
+    "scalePercent": 100,
+    "x": 0,
+    "y": 0,
+    "widthMm": 148,
+    "heightMm": 210
+  },
+  "generatedAt": "2025-09-04T03:09:17.864Z",
+  "version": 1
+}

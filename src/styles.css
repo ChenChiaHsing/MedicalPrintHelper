@@ -1,0 +1,147 @@
+.canvas-field .cf-label.is-label {
+	color: #b0b4bb;
+	font-style: italic;
+	opacity: 0.85;
+}
+/* ---------------------- 基本變數 ---------------------- */
+
+/* 美化左側欄位區域 */
+.left-panel {
+		width:540px;
+	overflow:auto;
+	padding:18px 16px 18px;
+	background:linear-gradient(120deg,#f8fafc 60%,#e3e8f0 100%);
+	border-right:2px solid var(--border);
+	display:flex;
+	flex-direction:column;
+	gap:18px;
+	box-shadow:0 2px 12px -6px #b6c2d6;
+}
+.left-panel h2 {
+	margin:0 0 12px;
+	font-size:18px;
+	font-weight:700;
+	color:#1e293b;
+	letter-spacing:1px;
+	text-shadow:0 1px 0 #fff;
+	border-bottom:1.5px solid #e0e7ef;
+	padding-bottom:6px;
+}
+:root {
+	--primary:#ff7a00;
+	--primary-accent:#ff922b;
+	--primary-dark:#d96500;
+	--bg:#f2f4f7;
+	--panel:#ffffff;
+	--border:#d9dee5;
+	--border-soft:#ebeef2;
+	--accent:#0a84ff;
+	--danger:#e54848;
+	--text:#222;
+	--radius:8px;
+	--shadow-sm:0 1px 2px rgba(0,0,0,.06),0 0 0 1px var(--border-soft);
+	--shadow-md:0 4px 10px -2px rgba(0,0,0,.12),0 0 0 1px var(--border-soft);
+	--transition:150ms cubic-bezier(.4,.2,.1,1);
+}
+
+* { box-sizing:border-box; }
+body { font-family: system-ui,-apple-system,"Noto Sans TC",Arial,sans-serif; margin:0; background:linear-gradient(155deg,#f8fafc,#edf1f7); color:var(--text); }
+
+/* ---------------------- 頂部工具列 ---------------------- */
+header { background:#1f2933; background:linear-gradient(90deg,#1f2933,#273645); color:#fff; padding:10px 18px; display:flex; flex-wrap:wrap; align-items:center; gap:14px; box-shadow:0 2px 4px rgba(0,0,0,.18); }
+header h1 { font-size:18px; font-weight:600; letter-spacing:.5px; margin:0; }
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.actions .action-sep { width:1px; height:26px; background:linear-gradient(#ffffff40,#ffffffaa,#ffffff40); margin: 6px 6px; align-self:center; box-shadow:0 0 0 1px rgba(255,255,255,.3),0 0 0 2px rgba(0,0,0,.15); border-radius:1px; }
+
+/* ---------------------- 按鈕 ---------------------- */
+button { --btn-bg:var(--primary); --btn-bg-hover:var(--primary-accent); --btn-bg-active:var(--primary-dark); --btn-color:#fff; font:500 14px/1.1 inherit; padding:8px 14px; border-radius:var(--radius); border:1px solid rgba(0,0,0,.08); background:linear-gradient(var(--btn-bg),var(--btn-bg-active)); color:var(--btn-color); cursor:pointer; position:relative; transition:var(--transition); box-shadow:var(--shadow-sm); letter-spacing:.5px; }
+button:hover { filter:brightness(1.05); box-shadow:var(--shadow-md); }
+button:active { transform:translateY(1px); box-shadow:0 1px 2px rgba(0,0,0,.4); }
+button#btn-export-json { --btn-bg:#2563eb; --btn-bg-hover:#2d6ef3; --btn-bg-active:#1d4fb7; }
+button#btn-load-json { --btn-bg:#6366f1; --btn-bg-active:#4f46e5; }
+button#btn-add-field { --btn-bg:#10b981; --btn-bg-active:#059669; }
+button#btn-print-preview { --btn-bg:#6d7280; --btn-bg-active:#4b5563; }
+button#btn-load-sample { --btn-bg:#f59e0b; --btn-bg-active:#d97706; }
+button.danger, .field-item button.btn-del { --btn-bg:var(--danger); --btn-bg-active:#c63030; }
+
+/* delete button inside field item */
+.field-item button.btn-del { padding:4px 8px; font-size:12px; line-height:1; box-shadow:none; }
+
+/* ---------------------- 版面結構 ---------------------- */
+main { display:flex; height:calc(100vh - 70px); max-height:calc(100vh - 70px); }
+.left-panel { width:360px; overflow:auto; padding:14px; background:var(--panel); border-right:1px solid var(--border); display:flex; flex-direction:column; gap:12px; }
+.right-panel { flex:1; padding:14px 18px 28px; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.left-panel h2,.right-panel h2 { margin:0 0 4px; font-size:15px; letter-spacing:.5px; font-weight:600; color:#334155; }
+
+.field-pos-info { font-size:13px; color:#0a84ff; margin-bottom:6px; min-height:18px; font-family:monospace; letter-spacing:.5px; }
+/* Canvas title row for x,y display */
+.canvas-title-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:2px; }
+.canvas-title-row h2 { margin:0; }
+.field-pos-info { font-size:13px; color:#0a84ff; min-width:120px; min-height:18px; font-family:monospace; letter-spacing:.5px; text-align:right; margin-bottom:0; }
+
+/* ---------------------- 滾動條 ---------------------- */
+/* Webkit */
+.left-panel::-webkit-scrollbar, #canvas-wrapper::-webkit-scrollbar { width:10px; height:10px; }
+.left-panel::-webkit-scrollbar-track, #canvas-wrapper::-webkit-scrollbar-track { background:transparent; }
+.left-panel::-webkit-scrollbar-thumb, #canvas-wrapper::-webkit-scrollbar-thumb { background:#c5ccd4; border-radius:20px; border:2px solid #f4f6f9; }
+.left-panel::-webkit-scrollbar-thumb:hover, #canvas-wrapper::-webkit-scrollbar-thumb:hover { background:#a9b2bd; }
+
+/* ---------------------- 欄位列表 ---------------------- */
+.field-list { display:flex; flex-direction:column; gap:10px; }
+.field-item { border:1px solid var(--border); background:linear-gradient(#fff,#f9fafb); padding:8px 10px 10px; border-radius:12px; position:relative; box-shadow:var(--shadow-sm); transition:var(--transition); }
+.field-item:hover { box-shadow:var(--shadow-md); border-color:#c8d1dc; }
+.field-item.highlight { animation:flash 1.2s ease; }
+@keyframes flash { 0% { box-shadow:0 0 0 0 rgba(255,122,0,.6);} 70% { box-shadow:0 0 0 10px rgba(255,122,0,0);} 100% { box-shadow:0 0 0 0 rgba(255,122,0,0);} }
+.field-item-header { display:flex; gap:6px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
+.field-item-header input.fi-label { flex:2 1 0; min-width:0; font-weight:600; }
+.field-item-header input.fi-key { flex:1 1 0; min-width:0; }
+.field-item-header select.fi-type { flex:1 1 0; min-width:0; }
+.field-item-header input.fi-label { flex:1; font-weight:600; }
+.field-item input, .field-item select, .field-item textarea { font:13px/1.3 "Noto Sans TC",Arial,sans-serif; border:1px solid var(--border); background:#fff; border-radius:6px; padding:4px 6px; transition:var(--transition); }
+.field-item input:focus, .field-item select:focus, .field-item textarea:focus { outline:2px solid var(--accent); outline-offset:2px; }
+.field-item textarea.fi-value { width:100%; resize:vertical; min-height:50px; }
+.style-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:6px 10px; margin-top:8px; }
+.style-grid label { display:flex; justify-content:space-between; font-size:11px; align-items:center; color:#475569; gap:2px; }
+.style-grid input, .style-grid select { margin-left:4px; width:74px; }
+
+/* ---------------------- 畫布區域 ---------------------- */
+#canvas-wrapper { flex:1; overflow:auto; background:repeating-linear-gradient(45deg,#e5e9ef,#e5e9ef 10px,#e9edf2 10px,#e9edf2 20px); border:1px solid var(--border); position:relative; border-radius:14px; box-shadow:var(--shadow-md); }
+.bag-canvas { position:relative; margin:26px; background:#fff; box-shadow:0 8px 24px -6px rgba(0,0,0,.18),0 0 0 1px #c7ced6; width:600px; height:840px; background-image:linear-gradient(90deg,#f3f5f7 1px,transparent 1px),linear-gradient(#f3f5f7 1px,transparent 1px); background-size:20px 20px; border-radius:6px; }
+.bag-canvas::after { content:"mm grid"; position:absolute; font-size:10px; color:#94a3b8; bottom:6px; right:8px; letter-spacing:.5px; }
+.canvas-field { position:absolute; border:1px dashed #6b7280; padding:3px 4px; cursor:move; min-width:20px; min-height:14px; overflow:hidden; border-radius:4px; background:rgba(255,255,255,.75); backdrop-filter:blur(2px); transition:var(--transition); }
+.canvas-field:hover { box-shadow:0 0 0 2px rgba(10,132,255,.25); }
+.canvas-field.selected { outline:2px solid var(--accent); z-index:10; background:rgba(255,255,255,.95); }
+.canvas-field .resize-handle { position:absolute; width:12px; height:12px; background:var(--accent); right:-6px; bottom:-6px; cursor:se-resize; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,.4); }
+
+/* ---------------------- 列印設定區 ---------------------- */
+.print-options { display:flex; gap:12px; flex-wrap:wrap; }
+.print-options label { font-size:13px; background:var(--panel); padding:6px 10px; border-radius:10px; box-shadow:var(--shadow-sm); display:flex; gap:6px; align-items:center; }
+.print-options input { width:70px; }
+
+/* ---------------------- 底圖控制 ---------------------- */
+.bg-controls { background:var(--panel); padding:10px 14px 14px; border-radius:14px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:10px; }
+.bg-controls { background:var(--panel); padding:10px 14px 14px; border-radius:14px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:10px; }
+.bg-controls-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.bg-controls h3 { margin:0; font-size:14px; letter-spacing:.5px; color:#334155; }
+.bg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; transition:height .2s; }
+.bg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; transition:height .2s; }
+.bg-grid label { font-size:12px; display:flex; flex-direction:column; gap:4px; color:#475569; }
+.bg-grid input[type=range] { width:100%; }
+.bg-layer { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+.bg-layer img { position:absolute; top:0; left:0; transform-origin:top left; user-select:none; -webkit-user-drag:none; image-rendering:crisp-edges; }
+.bg-controls.hide .bg-grid { display:none; }
+
+/* ---------------------- 表單協調 ---------------------- */
+input[type=number]::-webkit-inner-spin-button { opacity:.4; }
+
+/* ---------------------- 列印模式 ---------------------- */
+@media print {
+ body,html,main { height:auto; }
+ header, .left-panel, .print-options, #btn-print-preview,
+ .canvas-title-row, .bg-controls { display:none !important; }
+ .right-panel { padding:0 !important; }
+ #canvas-wrapper { overflow:visible; background:#fff; border:none; box-shadow:none; width:100vw !important; margin:0 auto !important; display:flex; justify-content:center; align-items:center; }
+ .bag-canvas { box-shadow:none; margin:0; background-image:none; transform:none !important; }
+ .canvas-field { border:none; box-shadow:none; background:transparent; }
+ .canvas-field .resize-handle { display:none; }
+}
