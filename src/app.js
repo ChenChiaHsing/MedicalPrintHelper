@@ -97,17 +97,40 @@ function renderFieldItem(field) {
   node.querySelector('.fi-label').value = field.label;
   node.querySelector('.fi-key').value = field.key || '';
   node.querySelector('.fi-type').value = field.type;
-  // 根據 type 顯示 textarea 或 table 編輯器
+  // 根據 type 顯示 textarea、table 編輯器或直線屬性
   const textarea = node.querySelector('.fi-value');
   const tableEditor = node.querySelector('.fi-table-editor');
+  // 動態插入直線屬性編輯
+  let lineEditor = node.querySelector('.fi-line-editor');
+  if (!lineEditor) {
+    lineEditor = document.createElement('div');
+    lineEditor.className = 'fi-line-editor';
+    lineEditor.style.display = 'none';
+    lineEditor.innerHTML = `
+      <label>方向
+        <select class="fi-line-direction">
+          <option value="horizontal">水平</option>
+          <option value="vertical">垂直</option>
+        </select>
+      </label>
+    `;
+    textarea.parentNode.insertBefore(lineEditor, textarea);
+  }
   function showEditor() {
     if (field.type === 'table') {
       textarea.style.display = 'none';
       tableEditor.style.display = '';
+      lineEditor.style.display = 'none';
       renderTableEditor(tableEditor, field);
+    } else if (field.type === 'line') {
+      textarea.style.display = 'none';
+      tableEditor.style.display = 'none';
+      lineEditor.style.display = '';
+      lineEditor.querySelector('.fi-line-direction').value = field.direction || 'horizontal';
     } else {
       textarea.style.display = '';
       tableEditor.style.display = 'none';
+      lineEditor.style.display = 'none';
       textarea.value = field.value;
     }
   }
@@ -118,6 +141,26 @@ function renderFieldItem(field) {
     showEditor();
     updateCanvasField(field.id);
   });
+  // 直線方向事件
+  if (lineEditor) {
+    lineEditor.querySelector('.fi-line-direction').addEventListener('change', (e) => {
+      field.direction = e.target.value;
+      // 自動調整 w/h
+      if (field.direction === 'vertical') {
+        if (field.w < 2) field.w = 2;
+        if (field.h < 20) field.h = 40;
+      } else {
+        if (field.h < 2) field.h = 2;
+        if (field.w < 20) field.w = 60;
+      }
+      // 同步右側 input
+      const wInput = node.querySelector('.fi-w');
+      const hInput = node.querySelector('.fi-h');
+      if (wInput) wInput.value = field.w;
+      if (hInput) hInput.value = field.h;
+      updateCanvasField(field.id);
+    });
+  }
   textarea.addEventListener('input', () => {
     field.value = textarea.value;
     updateCanvasField(field.id);
@@ -311,8 +354,39 @@ function renderCanvasField(field) {
   const div = document.createElement('div');
   div.className = 'canvas-field';
   div.dataset.id = field.id;
-  // 只加入一個 resize-handle，確保每個元件都能拖曳調整長寬
-  div.innerHTML = `<span class="cf-label"></span><div class="resize-handle" title="拖曳調整大小"></div>`;
+  if (field.type === 'line') {
+    // 用 SVG 畫直線，支援水平/垂直
+    const realPxPerMm = getPxPerMm();
+    const x = field.x * realPxPerMm;
+    const y = field.y * realPxPerMm;
+    let w = field.w * realPxPerMm;
+    let h = field.h * realPxPerMm;
+    const direction = field.direction || 'horizontal';
+    let svg, width, height;
+    if (direction === 'vertical') {
+      width = Math.abs(w)||2;
+      height = Math.abs(h)||40;
+      svg = `<svg width="${width}" height="${height}" style="position:absolute;left:0;top:0;overflow:visible;">
+        <line x1="${width/2}" y1="0" x2="${width/2}" y2="${height}"
+          stroke="#222" stroke-width="2" />
+      </svg>`;
+    } else {
+      width = Math.abs(w)||40;
+      height = Math.abs(h)||2;
+      svg = `<svg width="${width}" height="${height}" style="position:absolute;left:0;top:0;overflow:visible;">
+        <line x1="0" y1="${height/2}" x2="${width}" y2="${height/2}"
+          stroke="#222" stroke-width="2" />
+      </svg>`;
+    }
+    div.innerHTML = svg + '<div class="resize-handle" title="拖曳調整大小"></div>';
+    div.style.left = x + 'px';
+    div.style.top = y + 'px';
+    div.style.width = width + 'px';
+    div.style.height = height + 'px';
+  } else {
+    // 只加入一個 resize-handle，確保每個元件都能拖曳調整長寬
+    div.innerHTML = `<span class="cf-label"></span><div class="resize-handle" title="拖曳調整大小"></div>`;
+  }
   canvas.appendChild(div);
   div.addEventListener('mousedown', selectFieldFromCanvas);
   div.addEventListener('dblclick', () => scrollToFieldItem(field.id));
@@ -337,6 +411,15 @@ function updateCanvasField(id) {
   if (!field) return;
   const elem = canvas.querySelector(`.canvas-field[data-id="${id}"]`);
   const realPxPerMm = getPxPerMm();
+  if (field.type === 'line') {
+    // 直線需重建 SVG，確保方向與寬高正確
+    const oldElem = elem;
+    if (oldElem && oldElem.parentNode) {
+      oldElem.parentNode.removeChild(oldElem);
+      renderCanvasField(field);
+    }
+    return;
+  }
   elem.style.left = (field.x * realPxPerMm) + 'px';
   elem.style.top = (field.y * realPxPerMm) + 'px';
   elem.style.width = (field.w * realPxPerMm) + 'px';
@@ -524,7 +607,8 @@ function initPageControls() {
   // 範本選單：選擇時自動帶入寬高
   const templateMap = {
     bag: { width: 148, height: 210, dpi: 300 },
-    receipt: { width: 216, height: 94, dpi: 300 }
+    receipt: { width: 216, height: 94, dpi: 300 },
+    receipt2: { width: 216, height: 188, dpi: 300 }
   };
   const pageTemplate = el('#page-template');
   if (pageTemplate) {
@@ -550,6 +634,11 @@ function printPreview() { window.print(); }
 function init() {
   initPageControls();
   el('#btn-add-field').addEventListener('click', () => addField());
+  // 新增直線按鈕
+  const btnAddLine = el('#btn-add-line');
+  if (btnAddLine) {
+    btnAddLine.addEventListener('click', () => addField({ type: 'line', direction: 'horizontal', w: 60, h: 0.5 }));
+  }
   el('#btn-export-json').addEventListener('click', exportJSON);
   el('#btn-load-json').addEventListener('click', ()=> el('#file-json').click());
   el('#file-json').addEventListener('change', (e)=> { if (e.target.files[0]) loadJSONFile(e.target.files[0]); });
@@ -601,7 +690,7 @@ function init() {
     const sampleSelect = document.getElementById('sample-select');
     async function loadSampleList() {
       // 取得所有 json 檔名（需 server 端支援列目錄，這裡用硬編碼，實際可用 window.__SAMPLES__ 注入）
-      const files = ["bag-layout.json"];
+      const files = ["bag-layout.json", "receipt2.json"];
       const options = [];
       for(const f of files){
         try {

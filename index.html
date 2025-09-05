@@ -15,6 +15,7 @@
       <label style="font-size:14px; margin-right:8px;">樣板名稱：<input id="template-name" type="text" style="width:120px;"
           placeholder="請輸入名稱"></label>
       <button id="btn-add-field">新增欄位</button>
+  <button id="btn-add-line" style="margin-left:4px;">新增直線</button>
       <span class="action-sep" aria-hidden="true"></span>
       <button id="btn-save-temp" style="background:#0a84ff; color:#fff;">暫存</button>
       <button id="btn-load-temp" style="background:#475569; color:#fff;">還原暫存</button>
@@ -60,6 +61,7 @@
           <select id="page-template" style="min-width:120px">
             <option value="bag">藥袋（148×210mm）</option>
             <option value="receipt">收據（216×94mm）</option>
+            <option value="receipt2">收據2（216×188mm）</option>
           </select>
         </label>
         <!-- 新增分隔線 -->
@@ -98,6 +100,7 @@
           <option value="multiline">多行</option>
           <option value="qrcode">QRCode</option>
           <option value="table">表格</option>
+          <option value="line">直線</option>
         </select>
         <button class="btn-del">✕</button>
       </div>
