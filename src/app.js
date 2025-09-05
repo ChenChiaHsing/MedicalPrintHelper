@@ -32,6 +32,12 @@ window.addEventListener('DOMContentLoaded', () => {
     single.addEventListener('change', () => { if (single.checked) { state.bagMode = 'single'; } });
   }
   updateBagModeUI();
+  // 頁面載入時左側欄位列表自動捲到最上方
+  const listEl = document.querySelector('#field-list');
+  if (listEl) {
+    listEl.scrollTop = 0;
+    listEl.scrollTo({top:0,behavior:'auto'});
+  }
 });
 
 let idSeq = 1;
@@ -868,16 +874,7 @@ function loadDataObject(data) {
   state.batchAddingFields = false;
   // 尺寸變更後再次刷新所有已加載欄位（確保縮放/換算同步）
   state.fields.forEach(f=> updateCanvasField(f.id));
-  // 只高亮最後一個欄位
-  if (state.fields.length > 0) {
-    const lastId = state.fields[state.fields.length-1].id;
-    state.selectedId = lastId;
-    canvas.querySelectorAll('.canvas-field').forEach(el => el.classList.toggle('selected', el.dataset.id === lastId));
-    const item = listEl.querySelector(`.field-item[data-id=\"${lastId}\"]`);
-    item?.scrollIntoView({behavior:'smooth', block:'center'});
-    item?.classList.add('highlight');
-    setTimeout(()=> item?.classList.remove('highlight'), 1200);
-  }
+  // 載入時不自動選取/高亮任何欄位
   // 再次調整（若欄位加入造成高度捲動等視覺需求）
   resizeCanvas();
   updateBackgroundRender();
@@ -887,7 +884,7 @@ function loadDataObject(data) {
     setTimeout(() => {
       listEl.scrollTop = 0;
       listEl.scrollTo({top:0,behavior:'auto'});
-      if (document.activeElement) document.activeElement.blur();
+      // 不自動 blur 任何元件
     }, 200);
   }, 200);
 }
