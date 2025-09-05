@@ -470,6 +470,9 @@ function updateCanvasField(id) {
     elem.style.top = (field.y * realPxPerMm) + 'px';
     elem.style.width = wPx + 'px';
     elem.style.height = hPx + 'px';
+    // 重新綁定拖曳與縮放
+    makeDraggable(elem);
+    makeResizable(elem);
     return;
   }
   elem.style.left = (field.x * realPxPerMm) + 'px';
@@ -515,6 +518,7 @@ function updateCanvasField(id) {
 }
 
 function selectFieldFromCanvas(e) {
+  if (state.isResizing) return; // 拖曳縮放時不觸發選取
   const id = e.currentTarget.dataset.id;
   state.selectedId = id;
   // 畫布高亮
@@ -535,11 +539,12 @@ function makeDraggable(elem) {
   let startX, startY, origX, origY;
   function onMouseDown(e) {
     if (e.target.classList.contains('resize-handle')) return;
+    if (state.isResizing) return; // 拖曳縮放時不觸發拖曳
     e.preventDefault();
     startX = e.clientX; startY = e.clientY;
     const id = elem.dataset.id;
     const f = getField(id);
-  const unit = getPxPerMm(); // px per mm on screen
+    const unit = getPxPerMm(); // px per mm on screen
     origX = f.x; origY = f.y;
     function onMove(ev) {
       const dx = (ev.clientX - startX) / unit;
@@ -548,7 +553,7 @@ function makeDraggable(elem) {
       f.y = parseFloat((origY + dy).toFixed(2));
       syncFieldInputs(f);
       updateCanvasField(f.id);
-  updateFieldPosInfo(f.id);
+      updateFieldPosInfo(f.id);
     }
     function onUp() { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); }
     window.addEventListener('mousemove', onMove);
@@ -562,9 +567,12 @@ function makeResizable(elem) {
   let startX, startY, origW, origH, field;
   handle.addEventListener('mousedown', (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    document.body.style.userSelect = 'none';
+    state.isResizing = true;
     startX = e.clientX; startY = e.clientY;
     field = getField(elem.dataset.id);
-  const unit = getPxPerMm();
+    const unit = getPxPerMm();
     origW = field.w; origH = field.h;
     function onMove(ev) {
       const dx = (ev.clientX - startX) / unit;
@@ -574,7 +582,12 @@ function makeResizable(elem) {
       syncFieldInputs(field);
       updateCanvasField(field.id);
     }
-    function onUp() { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); }
+    function onUp() {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      document.body.style.userSelect = '';
+      state.isResizing = false;
+    }
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
   });
