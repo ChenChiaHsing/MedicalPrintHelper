@@ -11,8 +11,28 @@ const state = {
   selectedId: null,
   background: { dataUrl: null, opacity: 0.35, scalePercent: 100, x:0, y:0, widthMm:148, heightMm:210 },
   ui: { zoom: 1 },
-  batchAddingFields: false
+  batchAddingFields: false,
+  bagMode: 'multi' // 'multi' 多藥一袋, 'single' 一藥一袋
 };
+
+// --------- 全局藥袋模式設定 ---------
+function updateBagModeUI() {
+  const multi = document.getElementById('bag-mode-multi');
+  const single = document.getElementById('bag-mode-single');
+  if (!multi || !single) return;
+  multi.checked = state.bagMode === 'multi';
+  single.checked = state.bagMode === 'single';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const multi = document.getElementById('bag-mode-multi');
+  const single = document.getElementById('bag-mode-single');
+  if (multi && single) {
+    multi.addEventListener('change', () => { if (multi.checked) { state.bagMode = 'multi'; } });
+    single.addEventListener('change', () => { if (single.checked) { state.bagMode = 'single'; } });
+  }
+  updateBagModeUI();
+});
 
 let idSeq = 1;
 
@@ -618,6 +638,7 @@ function exportJSON() {
     page: state.page,
     fields,
     background: state.background,
+    bagMode: state.bagMode,
     generatedAt: new Date().toISOString(),
     version:1
   };
@@ -831,6 +852,9 @@ function loadDataObject(data) {
   canvas.innerHTML = '';
   Object.assign(state.page, data.page || {});
   if (data.background) Object.assign(state.background, data.background);
+  // bagMode
+  state.bagMode = data.bagMode === 'single' ? 'single' : 'multi';
+  updateBagModeUI();
   el('#page-width').value = state.page.widthMm;
   el('#page-height').value = state.page.heightMm;
   el('#dpi').value = state.page.dpi;

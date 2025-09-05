@@ -3,17 +3,22 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>健曄醫康 - 藥袋版面設定工具</title>
+  <title>健曄醫康 - 藥袋/收據-版面設計工具</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 
 <body>
   <header>
-    <h1>健曄醫康 - 藥袋版面設定工具</h1>
+    <h1>健曄醫康 - 藥袋/收據-版面設計工具</h1>
     <div class="actions">
       <label style="font-size:14px; margin-right:8px;">樣板名稱：<input id="template-name" type="text" style="width:120px;"
           placeholder="請輸入名稱"></label>
+      <span style="font-size:14px; margin-right:16px;">
+        <b>藥袋模式：</b>
+        <label><input type="radio" name="bag-mode" id="bag-mode-multi" value="multi" checked> 多藥一袋</label>
+        <label style="margin-left:8px;"><input type="radio" name="bag-mode" id="bag-mode-single" value="single"> 一藥一袋</label>
+      </span>
       <button id="btn-add-field">新增欄位</button>
   <button id="btn-add-line" style="margin-left:4px;">新增直線</button>
       <span class="action-sep" aria-hidden="true"></span>
