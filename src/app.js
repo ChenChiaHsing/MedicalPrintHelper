@@ -92,12 +92,16 @@ function addField(data = {}) {
       colWidths = Array(cols).fill(Math.round(100/cols));
     }
   }
-  const field = {
-    id: 'F' + (idSeq++),
+  // 將所有屬性展開，保留所有自訂欄位資訊
+  const field = Object.assign({}, data, {
+    id: data.id || ('F' + (idSeq++)),
+    value: data.type === 'table' ? value : value,
+    colWidths: data.type === 'table' ? colWidths : data.colWidths,
+    colLocked: data.type === 'table' ? (data.colLocked || (Array.isArray(colWidths) ? colWidths.map(()=>false) : undefined)) : data.colLocked,
+    showBorder: data.type === 'table' ? (data.showBorder !== undefined ? data.showBorder : true) : data.showBorder,
     label: data.label || '新欄位',
     key: data.key || '',
     type: data.type || 'text',
-    value: data.type === 'table' ? value : value,
     x: data.x ?? 10,
     y: data.y ?? 10,
     w: data.w ?? 40,
@@ -105,10 +109,7 @@ function addField(data = {}) {
     font: data.font ?? 14,
     bold: data.bold ?? false,
     align: data.align || 'left',
-    showBorder: data.type === 'table' ? (data.showBorder !== undefined ? data.showBorder : true) : undefined,
-    colWidths: data.type === 'table' ? colWidths : undefined,
-    colLocked: data.type === 'table' ? (data.colLocked || Array.isArray(colWidths) ? colWidths.map(()=>false) : undefined) : undefined,
-  };
+  });
   state.fields.push(field);
   renderFieldItem(field);
   renderCanvasField(field);
@@ -430,7 +431,8 @@ function renderCanvasField(field) {
   div.addEventListener('dblclick', () => scrollToFieldItem(field.id));
   makeDraggable(div);
   makeResizable(div);
-  updateCanvasField(field.id);
+  // line 初次渲染已就緒，避免遞迴重建
+  if (field.type !== 'line') updateCanvasField(field.id);
 }
 
 function getField(id) { return state.fields.find(f => f.id === id); }
@@ -450,12 +452,24 @@ function updateCanvasField(id) {
   const elem = canvas.querySelector(`.canvas-field[data-id="${id}"]`);
   const realPxPerMm = getPxPerMm();
   if (field.type === 'line') {
-    // 直線需重建 SVG，確保方向與寬高正確
-    const oldElem = elem;
-    if (oldElem && oldElem.parentNode) {
-      oldElem.parentNode.removeChild(oldElem);
-      renderCanvasField(field);
-    }
+    // 直線：直接更新/重建其內部 SVG 避免呼叫 renderCanvasField 造成遞迴
+    if (!elem) return;
+    // 清空後重建 SVG
+    const direction = field.direction || 'horizontal';
+    let wPx = Math.abs(field.w * realPxPerMm) || (direction==='vertical'?2:40);
+    let hPx = Math.abs(field.h * realPxPerMm) || (direction==='vertical'?40:2);
+    const svg = direction === 'vertical'
+      ? `<svg width="${wPx}" height="${hPx}" style="position:absolute;left:0;top:0;overflow:visible;">
+          <line x1="${wPx/2}" y1="0" x2="${wPx/2}" y2="${hPx}" stroke="#222" stroke-width="2" />
+        </svg>`
+      : `<svg width="${wPx}" height="${hPx}" style="position:absolute;left:0;top:0;overflow:visible;">
+          <line x1="0" y1="${hPx/2}" x2="${wPx}" y2="${hPx/2}" stroke="#222" stroke-width="2" />
+        </svg>`;
+    elem.innerHTML = svg + '<div class="resize-handle" title="拖曳調整大小"></div>';
+    elem.style.left = (field.x * realPxPerMm) + 'px';
+    elem.style.top = (field.y * realPxPerMm) + 'px';
+    elem.style.width = wPx + 'px';
+    elem.style.height = hPx + 'px';
     return;
   }
   elem.style.left = (field.x * realPxPerMm) + 'px';
@@ -608,21 +622,7 @@ function loadJSONFile(file) {
     try {
       const json = JSON.parse(reader.result);
       if (!json.fields) throw new Error('格式不正確');
-      // reset
-      state.fields = [];
-      listEl.innerHTML='';
-      canvas.innerHTML='';
-  Object.assign(state.page, json.page || {});
-  if (json.background) Object.assign(state.background, json.background);
-  el('#page-width').value = state.page.widthMm;
-  el('#page-height').value = state.page.heightMm;
-  el('#dpi').value = state.page.dpi;
-  // 樣板名稱顯示
-  const nameInput = document.getElementById('template-name');
-  if (nameInput && typeof json.name === 'string') nameInput.value = json.name;
-  json.fields.forEach(f=> addField(f));
-  resizeCanvas();
-  updateBackgroundRender();
+      loadDataObject(json);
     } catch(err) { alert('讀取失敗: '+ err.message); }
   };
   reader.readAsText(file,'utf-8');
@@ -808,6 +808,10 @@ document.getElementById('btn-clear-all')?.addEventListener('click', () => {
   }
 });
 function loadSampleFromData(data) {
+  loadDataObject(data);
+}
+
+function loadDataObject(data) {
   // 清空現有欄位
   state.fields = [];
   listEl.innerHTML = '';
@@ -817,12 +821,27 @@ function loadSampleFromData(data) {
   el('#page-width').value = state.page.widthMm;
   el('#page-height').value = state.page.heightMm;
   el('#dpi').value = state.page.dpi;
+  // 先依新尺寸調整畫布，避免後續 addField 時使用舊寬度換算 px
+  resizeCanvas();
   // 樣板名稱顯示
   const nameInput = document.getElementById('template-name');
   if (nameInput && typeof data.name === 'string') nameInput.value = data.name;
   state.batchAddingFields = true;
   (data.fields||[]).forEach(f=> addField(f));
   state.batchAddingFields = false;
+  // 尺寸變更後再次刷新所有已加載欄位（確保縮放/換算同步）
+  state.fields.forEach(f=> updateCanvasField(f.id));
+  // 只高亮最後一個欄位
+  if (state.fields.length > 0) {
+    const lastId = state.fields[state.fields.length-1].id;
+    state.selectedId = lastId;
+    canvas.querySelectorAll('.canvas-field').forEach(el => el.classList.toggle('selected', el.dataset.id === lastId));
+    const item = listEl.querySelector(`.field-item[data-id=\"${lastId}\"]`);
+    item?.scrollIntoView({behavior:'smooth', block:'center'});
+    item?.classList.add('highlight');
+    setTimeout(()=> item?.classList.remove('highlight'), 1200);
+  }
+  // 再次調整（若欄位加入造成高度捲動等視覺需求）
   resizeCanvas();
   updateBackgroundRender();
   setTimeout(() => {
@@ -835,6 +854,7 @@ function loadSampleFromData(data) {
     }, 200);
   }, 200);
 }
+
 function clearAllFields() { state.fields = []; listEl.innerHTML=''; canvas.innerHTML=''; }
 
 // ------------------------- 背景處理 ---------------------------
