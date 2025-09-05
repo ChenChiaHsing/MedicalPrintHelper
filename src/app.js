@@ -16,10 +16,45 @@ const state = {
 
 let idSeq = 1;
 
+
 const el = sel => document.querySelector(sel);
 const listEl = el('#field-list');
 const canvas = el('#bag-canvas');
 const bgLayer = document.getElementById('bg-layer');
+
+// -------- 左側面板拖曳寬度 --------
+window.addEventListener('DOMContentLoaded', () => {
+  const wrap = document.querySelector('.left-panel-resize-wrap');
+  const panel = document.querySelector('.left-panel');
+  const resizer = document.querySelector('.left-panel-resizer');
+  if (!wrap || !panel || !resizer) return;
+  // 載入寬度
+  const saved = localStorage.getItem('leftPanelWidth');
+  if (saved) panel.style.width = saved + 'px';
+  let dragging = false;
+  let startX = 0;
+  let startW = 0;
+  resizer.addEventListener('mousedown', e => {
+    dragging = true;
+    startX = e.clientX;
+    startW = panel.offsetWidth;
+    document.body.style.cursor = 'ew-resize';
+    document.body.style.userSelect = 'none';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    let newW = Math.max(320, Math.min(900, startW + (e.clientX - startX)));
+    panel.style.width = newW + 'px';
+  });
+  window.addEventListener('mouseup', e => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    let w = parseInt(panel.offsetWidth);
+    localStorage.setItem('leftPanelWidth', w);
+  });
+});
 
 const mmToPx = (mm) => {
   // Assume 1 inch = 25.4 mm, DPI setting
@@ -338,9 +373,12 @@ function renderFieldItem(field) {
 
   // 點選左側欄位時，右側畫布同步高亮
   node.addEventListener('click', () => {
-    state.selectedId = field.id;
-    canvas.querySelectorAll('.canvas-field').forEach(el => el.classList.toggle('selected', el.dataset.id === field.id));
-    updateFieldPosInfo(field.id);
+          state.selectedId = field.id;
+          // 左側高亮
+          listEl.querySelectorAll('.field-item').forEach(el => el.classList.toggle('selected', el.dataset.id === field.id));
+          // 右側高亮
+          canvas.querySelectorAll('.canvas-field').forEach(el => el.classList.toggle('selected', el.dataset.id === field.id));
+          updateFieldPosInfo(field.id);
   });
 
   listEl.appendChild(node);
@@ -465,7 +503,9 @@ function updateCanvasField(id) {
 function selectFieldFromCanvas(e) {
   const id = e.currentTarget.dataset.id;
   state.selectedId = id;
+  // 畫布高亮
   canvas.querySelectorAll('.canvas-field').forEach(el => el.classList.toggle('selected', el.dataset.id === id));
+  listEl.querySelectorAll('.field-item').forEach(el => el.classList.toggle('selected', el.dataset.id === id));
   scrollToFieldItem(id);
   updateFieldPosInfo(id);
 }
@@ -557,7 +597,7 @@ function exportJSON() {
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'bag-layout.json';
+  a.download = templateName + '.json';
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -690,7 +730,7 @@ function init() {
     const sampleSelect = document.getElementById('sample-select');
     async function loadSampleList() {
       // 取得所有 json 檔名（需 server 端支援列目錄，這裡用硬編碼，實際可用 window.__SAMPLES__ 注入）
-      const files = ["bag-layout.json", "receipt2.json"];
+      const files = ["藥袋1.json", "收據1.json"];
       const options = [];
       for(const f of files){
         try {

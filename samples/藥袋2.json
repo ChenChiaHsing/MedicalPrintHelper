@@ -1,5 +1,5 @@
 {
-  "name": "和美",
+  "name": "藥袋2",
   "page": {
     "widthMm": 148,
     "heightMm": 210,
@@ -7,7 +7,7 @@
   },
   "fields": [
     {
-      "id": "F16",
+      "id": "F1",
       "label": "診所名稱",
       "type": "text",
       "value": "",
@@ -20,31 +20,8 @@
       "align": "center"
     },
     {
-      "id": "F17",
-      "label": "服務範圍",
-      "type": "table",
-      "value": [
-        [
-          "A",
-          "B"
-        ],
-        [
-          "C",
-          "D"
-        ]
-      ],
-      "x": 14,
-      "y": 18,
-      "w": 120,
-      "h": 22,
-      "font": 9,
-      "showBorder": true,
-      "bold": false,
-      "align": "center"
-    },
-    {
-      "id": "F18",
-      "label": "Slogan",
+      "id": "F3",
+      "label": "親切  耐心  專業",
       "type": "text",
       "value": "",
       "x": 14,
@@ -56,8 +33,8 @@
       "align": "center"
     },
     {
-      "id": "F19",
-      "label": "姓名：",
+      "id": "F4",
+      "label": "姓名：{{patient.name}}",
       "type": "text",
       "value": "",
       "x": 8,
@@ -69,8 +46,8 @@
       "align": "left"
     },
     {
-      "id": "F20",
-      "label": "生日：",
+      "id": "F5",
+      "label": "生日：{{patient.birthROC}}",
       "type": "text",
       "value": "",
       "x": 50,
@@ -82,8 +59,8 @@
       "align": "left"
     },
     {
-      "id": "F21",
-      "label": "性別：",
+      "id": "F6",
+      "label": "性別：{{patient.gender}}",
       "type": "text",
       "value": "",
       "x": 92,
@@ -95,8 +72,8 @@
       "align": "left"
     },
     {
-      "id": "F22",
-      "label": "日期：",
+      "id": "F7",
+      "label": "日期：{{prescription.dateROC}}",
       "type": "text",
       "value": "",
       "x": 114,
@@ -108,30 +85,21 @@
       "align": "left"
     },
     {
-      "id": "F23",
-      "label": "醫令名稱區",
-      "type": "table",
-      "value": [
-        [
-          "藥品",
-          "名稱",
-          "用量X天",
-          "用法",
-          "總量"
-        ]
-      ],
+      "id": "F8",
+      "label": "序  品項名稱            規格  用量x天  用法           總量",
+      "type": "text",
+      "value": "",
       "x": 8,
       "y": 62,
       "w": 130,
       "h": 6,
       "font": 10,
-      "showBorder": false,
       "bold": true,
       "align": "left"
     },
     {
-      "id": "F24",
-      "label": "醫令區",
+      "id": "F9",
+      "label": "1 CO-DIOVAN 160/12.5              1.00x28 一天1次 28.00/28\n2 ☆(白)*EURODIN(ESOMIN)           1.00x28 睡前服用 28.00/28\n3 Betmiga(mirabegron25)           1.00x28 睡前服用 28.00/28\n4 LINICOR 500/20mg                1.00x28 一天1次 28.00/28\n5 IESLO/10mg ESCITALOPR           1.00x28 睡前服用 28.00/28\n6 TAMSULOSIN-SANDOZ 4m            1.00x28 睡前服用 28.00/28",
       "type": "multiline",
       "value": "",
       "x": 8,
@@ -143,7 +111,7 @@
       "align": "left"
     },
     {
-      "id": "F25",
+      "id": "F10",
       "label": "☐ 內含易潮濕藥品，請冷藏 / Refrigeration necessary",
       "type": "text",
       "value": "",
@@ -156,7 +124,7 @@
       "align": "left"
     },
     {
-      "id": "F26",
+      "id": "F11",
       "label": "本院採用歐、美原廠及GMP優良製藥，安全效果好",
       "type": "text",
       "value": "",
@@ -169,10 +137,10 @@
       "align": "center"
     },
     {
-      "id": "F27",
-      "label": "說明",
+      "id": "F12",
+      "label": "本院看診時間 ✔看診\n時段/星期  一  二  三  四  五  六  日\n上午08:00-12:00 ✔ ✔ ✔ ✔ ✔ ✔  \n下午03:00-06:00 ✔ ✔ ✔ ✔ ✔ ✔  \n晚上06:00-09:00 ✔ ✔ ✔ ✔ ✔ ✔  ",
       "type": "multiline",
-      "value": "本院看診時間 ✔看診\n時段/星期  一  二  三  四  五  六  日\n上午08:00-12:00 ✔ ✔ ✔ ✔ ✔ ✔  \n下午03:00-06:00 ✔ ✔ ✔ ✔ ✔ ✔  \n晚上06:00-09:00 ✔ ✔ ✔ ✔ ✔ ✔  ",
+      "value": "",
       "x": 8,
       "y": 160,
       "w": 70,
@@ -182,7 +150,7 @@
       "align": "left"
     },
     {
-      "id": "F28",
+      "id": "F13",
       "label": "院址：中壢區元化路53號",
       "type": "text",
       "value": "",
@@ -195,7 +163,7 @@
       "align": "left"
     },
     {
-      "id": "F29",
+      "id": "F14",
       "label": "(03)425-6562",
       "type": "text",
       "value": "",
@@ -208,7 +176,7 @@
       "align": "center"
     },
     {
-      "id": "F30",
+      "id": "F15",
       "label": "http://wellbeauty.smartweb.tw",
       "type": "text",
       "value": "",
@@ -230,6 +198,6 @@
     "widthMm": 148,
     "heightMm": 210
   },
-  "generatedAt": "2025-09-04T03:09:17.864Z",
+  "generatedAt": "2025-09-04T01:53:00.281Z",
   "version": 1
 }

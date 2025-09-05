@@ -6,16 +6,36 @@
 /* ---------------------- 基本變數 ---------------------- */
 
 /* 美化左側欄位區域 */
+.left-panel-resize-wrap {
+	display: flex;
+	height: 100%;
+}
 .left-panel {
-		width:540px;
-	overflow:auto;
-	padding:18px 16px 18px;
-	background:linear-gradient(120deg,#f8fafc 60%,#e3e8f0 100%);
-	border-right:2px solid var(--border);
-	display:flex;
-	flex-direction:column;
-	gap:18px;
-	box-shadow:0 2px 12px -6px #b6c2d6;
+	width: 540px;
+	min-width: 320px;
+	max-width: 900px;
+	overflow: auto;
+	padding: 18px 16px 18px;
+	background: linear-gradient(120deg,#f8fafc 60%,#e3e8f0 100%);
+	border-right: 2px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	box-shadow: 0 2px 12px -6px #b6c2d6;
+	transition: width 0.18s cubic-bezier(.4,.2,.1,1);
+}
+.left-panel-resizer {
+	width: 7px;
+	cursor: ew-resize;
+	background: linear-gradient(90deg,#e3e8f0 60%,#cfd8e3 100%);
+	border-right: 1.5px solid #c3c8d2;
+	border-left: 1.5px solid #e0e7ef;
+	box-shadow: 1px 0 4px 0 #b6c2d633;
+	z-index: 20;
+	transition: background 0.18s;
+}
+.left-panel-resizer:hover {
+	background: #b6c2d6;
 }
 .left-panel h2 {
 	margin:0 0 12px;
@@ -111,6 +131,11 @@ main { display:flex; height:calc(100vh - 70px); max-height:calc(100vh - 70px); }
 .canvas-field { position:absolute; border:1px dashed #6b7280; padding:3px 4px; cursor:move; min-width:20px; min-height:14px; overflow:hidden; border-radius:4px; background:rgba(255,255,255,.75); backdrop-filter:blur(2px); transition:var(--transition); }
 .canvas-field:hover { box-shadow:0 0 0 2px rgba(10,132,255,.25); }
 .canvas-field.selected { outline:2px solid var(--accent); z-index:10; background:rgba(255,255,255,.95); }
+.field-item.selected {
+	border: 2px solid var(--accent);
+	background: #e0f0ff;
+	box-shadow: 0 0 0 2px var(--accent), 0 2px 8px -2px #b6c2d6;
+}
 .canvas-field .resize-handle { position:absolute; width:12px; height:12px; background:var(--accent); right:-6px; bottom:-6px; cursor:se-resize; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,.4); }
 
 /* ---------------------- 列印設定區 ---------------------- */
