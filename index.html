@@ -54,10 +54,20 @@
           <div id="bg-layer" class="bg-layer" aria-label="底圖層"></div>
         </div>
       </div>
+      
       <div class="print-options">
+        <label style="font-size:14px;">版面範本：
+          <select id="page-template" style="min-width:120px">
+            <option value="bag">藥袋（148×210mm）</option>
+            <option value="receipt">收據（216×94mm）</option>
+          </select>
+        </label>
+        <!-- 新增分隔線 -->
+        <hr style="border: 1px solid #ccc; margin: 6px ;" />
         <label>整體寬(mm) <input type="number" id="page-width" value="148" step="1"></label>
         <label>整體高(mm) <input type="number" id="page-height" value="210" step="1"></label>
         <label>列印 DPI <input type="number" id="dpi" value="300" step="10"></label>
+      </div>
       </div>
       <div class="bg-controls hide" id="bg-controls">
         <div class="bg-controls-header">

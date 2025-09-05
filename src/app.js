@@ -520,6 +520,29 @@ function initPageControls() {
   el('#page-width').addEventListener('input', () => { state.page.widthMm = parseFloat(el('#page-width').value)||148; resizeCanvas(); });
   el('#page-height').addEventListener('input', () => { state.page.heightMm = parseFloat(el('#page-height').value)||210; resizeCanvas(); });
   el('#dpi').addEventListener('input', () => { state.page.dpi = parseInt(el('#dpi').value)||300; state.fields.forEach(f=> updateCanvasField(f.id)); });
+
+  // 範本選單：選擇時自動帶入寬高
+  const templateMap = {
+    bag: { width: 148, height: 210, dpi: 300 },
+    receipt: { width: 216, height: 94, dpi: 300 }
+  };
+  const pageTemplate = el('#page-template');
+  if (pageTemplate) {
+    pageTemplate.addEventListener('change', (e) => {
+      const val = e.target.value;
+      const tpl = templateMap[val];
+      if (tpl) {
+        el('#page-width').value = tpl.width;
+        el('#page-height').value = tpl.height;
+        el('#dpi').value = tpl.dpi;
+        state.page.widthMm = tpl.width;
+        state.page.heightMm = tpl.height;
+        state.page.dpi = tpl.dpi;
+        resizeCanvas();
+        state.fields.forEach(f=> updateCanvasField(f.id));
+      }
+    });
+  }
 }
 
 function printPreview() { window.print(); }

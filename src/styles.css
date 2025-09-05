@@ -70,7 +70,7 @@ button.danger, .field-item button.btn-del { --btn-bg:var(--danger); --btn-bg-act
 /* ---------------------- 版面結構 ---------------------- */
 main { display:flex; height:calc(100vh - 70px); max-height:calc(100vh - 70px); }
 .left-panel { width:360px; overflow:auto; padding:14px; background:var(--panel); border-right:1px solid var(--border); display:flex; flex-direction:column; gap:12px; }
-.right-panel { flex:1; padding:14px 18px 28px; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.right-panel { flex:1; padding:14px 18px 0px; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
 .left-panel h2,.right-panel h2 { margin:0 0 4px; font-size:15px; letter-spacing:.5px; font-weight:600; color:#334155; }
 
 .field-pos-info { font-size:13px; color:#0a84ff; margin-bottom:6px; min-height:18px; font-family:monospace; letter-spacing:.5px; }
@@ -119,7 +119,6 @@ main { display:flex; height:calc(100vh - 70px); max-height:calc(100vh - 70px); }
 .print-options input { width:70px; }
 
 /* ---------------------- 底圖控制 ---------------------- */
-.bg-controls { background:var(--panel); padding:10px 14px 14px; border-radius:14px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:10px; }
 .bg-controls { background:var(--panel); padding:10px 14px 14px; border-radius:14px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:10px; }
 .bg-controls-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .bg-controls h3 { margin:0; font-size:14px; letter-spacing:.5px; color:#334155; }
