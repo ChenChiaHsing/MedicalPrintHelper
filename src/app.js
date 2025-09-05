@@ -768,12 +768,17 @@ function init() {
   });
     // 範例選單自動載入 samples 資料夾所有 json 檔案
     const sampleSelect = document.getElementById('sample-select');
+    if (sampleSelect) sampleSelect.selectedIndex = -1;
     async function loadSampleList() {
       // 取得所有 json 檔名（需 server 端支援列目錄，這裡用硬編碼，實際可用 window.__SAMPLES__ 注入）
-      const files = ["藥袋1.json", "收據1.json"];
+      const files = ["無", "藥袋1.json", "收據1.json"];
       const options = [];
       for(const f of files){
         try {
+          if(f==='無') {
+            options.push({name: '無', file: '', data: null});
+            continue;
+          }
           const res = await fetch(`samples/${f}`);
           const json = await res.json();
           options.push({name: json.name || f, file: f, data: json});
@@ -782,7 +787,7 @@ function init() {
       sampleSelect.innerHTML = options.map(opt => `<option value="${opt.file}">${opt.name}</option>`).join("");
       sampleSelect.options.length && (sampleSelect.selectedIndex = 0);
       // 預設載入第一個
-      if(options[0]) loadSampleFromData(options[0].data);
+      // if(options[0]) loadSampleFromData(options[0].data);
       sampleSelect.onchange = ()=> {
         const sel = options.find(opt=>opt.file===sampleSelect.value);
         if(sel) loadSampleFromData(sel.data);
